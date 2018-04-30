@@ -2,14 +2,19 @@
 
 [ -f /run-pre.sh ] && /run-pre.sh
 
-if [ ! -d /DATA/htdocs ] ; then
+if [ ! -d /DATA/htdocs ]  && [ ! -d /DATA/logs/php-fpm ] ; then
+  echo 'Creating the directory htdocs'
   mkdir -p /DATA/htdocs
   chown nginx:www-data /DATA/htdocs
+  
+  echo 'Creating the directory php-fpm'
+  mkdir -p /DATA/logs/php-fpm
+  
+  if $? -q 0
+  then
+    php-fpm
+  fi
 fi
-
-# start php-fpm
-mkdir -p /DATA/logs/php-fpm
-php-fpm
 
 # start nginx
 mkdir -p /DATA/logs/nginx
